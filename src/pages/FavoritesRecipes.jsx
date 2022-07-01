@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
-import Card from 'react-bootstrap/Card';
 import { Link } from 'react-router-dom';
+import Card from 'react-bootstrap/Card';
+import { Button, ButtonGroup, Container } from 'react-bootstrap';
 import Header from '../components/Header';
 import whiteHeartIcon from '../images/whiteHeartIcon.svg';
 import BlackHeartIcon from '../images/blackHeartIcon.svg';
@@ -15,9 +16,11 @@ const FavoritesRecipes = () => {
 
   const [favorite, setFavorite] = useState(true);
   const [filteredRecipes, setFilteredRecipes] = useState([]);
+  const [allRecipes, setAllRecipes] = useState([]);
 
   useEffect(() => {
     setFilteredRecipes(favoriteRecipes);
+    setAllRecipes(favoriteRecipes);
   }, []);
 
   const removeFavoriteRecipe = (recipe) => {
@@ -28,140 +31,114 @@ const FavoritesRecipes = () => {
     setFavorite((prevFavorite) => (!prevFavorite));
   };
 
-  const redirectClick = (recipe) => {
-    if (recipe.type === 'drink') {
-      history.push(`/drinks/${recipe.id}`);
-    } else {
-      history.push(`/foods/${recipe.id}`);
-    }
-  };
-
-  const handleShareRecipe = ({ target }) => {
-    copy(`${window.location.origin}${target.name}`);
-    setShowMessage(true);
-  };
-
-  if (showMessage) {
-    const MESSAGE_TIME = 2000;
-    setTimeout(() => {
-      setShowMessage(false);
-    }, MESSAGE_TIME);
-  }
-
   const filterByAll = async () => {
     setFilteredRecipes(favoriteRecipes);
   };
 
   const filterFoods = async () => {
-    const foods = filteredRecipes.filter((recipe) => recipe.type === 'food');
+    const foods = allRecipes.filter((recipe) => recipe.type === 'food');
     setFilteredRecipes(foods);
   };
 
   const filterDrinks = async () => {
-    const drinks = filteredRecipes.filter((recipe) => recipe.type === 'drink');
+    const drinks = allRecipes.filter((recipe) => recipe.type === 'drink');
     setFilteredRecipes(drinks);
   };
 
   return (
-    <>
+    <section className="bg-light">
       <Header />
-      <div>Favorites Recipes</div>
-      <button
-        type="button"
-        onClick={ filterFoods }
-        data-testid="filter-by-food-btn"
-      >
-        Foods
-      </button>
-      <button
-        type="button"
-        onClick={ filterDrinks }
-        data-testid="filter-by-drink-btn"
-      >
-        Drinks
-      </button>
-      <button
-        type="button"
-        onClick={ filterByAll }
-        data-testid="filter-by-all-btn"
-      >
-        All
-      </button>
-      {
-        filteredRecipes.length > 0
+      <ButtonGroup size="lg" className="d-flex mx-2 mb-3 bg-white">
+        <Button
+          variant="outline-danger"
+          type="button"
+          onClick={ filterByAll }
+          data-testid="filter-by-all-btn"
+        >
+          All
+        </Button>
+        <Button
+          variant="outline-danger"
+          type="button"
+          onClick={ filterFoods }
+          data-testid="filter-by-food-btn"
+        >
+          Foods
+        </Button>
+        <Button
+          variant="outline-danger"
+          type="button"
+          onClick={ filterDrinks }
+          data-testid="filter-by-drink-btn"
+        >
+          Drinks
+        </Button>
+      </ButtonGroup>
+
+      <Container>
+        {
+          filteredRecipes.length > 0
         && filteredRecipes.map((recipe, index) => (
-          <Card key={ `${recipe.name}${index}` }>
+          <Card
+            className="d-flex flex-row mb-3 shadow"
+            key={ `${recipe.name}${index}` }
+          >
             <Link
               to={ recipe.type === 'drink'
                 ? `/drinks/${recipe.id}` : `/foods/${recipe.id}` }
             >
-
               <Card.Img
+                style={ { width: '8rem' } }
                 variant="top"
                 src={ recipe.image }
                 data-testid={ `${index}-horizontal-image` }
               />
-
             </Link>
             <Card.Body>
-              <Link
-                to={ recipe.type === 'drink'
-                  ? `/drinks/${recipe.id}` : `/foods/${recipe.id}` }
-              >
-                <Card.Title data-testid={ `${index}-horizontal-name` }>
-                  { recipe.name }
-                </Card.Title>
-
-              </button>
               <Card.Subtitle
-                className="mb-2 text-muted"
+                className="text-muted subtitle-text"
                 data-testid={ `${index}-horizontal-top-text` }
               >
                 { recipe.type === 'food'
                   ? (` ${recipe.nationality} - ${recipe.category}`)
                   : recipe.alcoholicOrNot}
               </Card.Subtitle>
-              <ShareBtn
-                testId={ `${index}-horizontal-share-btn` }
-                route={ `/${recipe.type}s/${recipe.id}` }
-              />
-
-                <Card.Subtitle
-                  className="mb-2 text-muted"
-                  data-testid={ `${index}-horizontal-top-text` }
+              <Link
+                to={ recipe.type === 'drink'
+                  ? `/drinks/${recipe.id}` : `/foods/${recipe.id}` }
+              >
+                <Card.Title
+                  className="text-danger mt-2"
+                  data-testid={ `${index}-horizontal-name` }
                 >
-                  { recipe.type === 'food'
-                    ? (` ${recipe.nationality} - ${recipe.category}`)
-                    : recipe.alcoholicOrNot}
-                </Card.Subtitle>
+                  { recipe.name }
+                </Card.Title>
               </Link>
-              <button
-                type="button"
-                onClick={ handleShareRecipe }
-              >
-                <img
-                  src={ shareIcon }
-                  alt="Share Icon"
-                  data-testid={ `${index}-horizontal-share-btn` }
-                  name={ `/${recipe.type}s/${recipe.id}` }
-                />
-              </button>
 
-              <button
-                type="button"
-                onClick={ () => removeFavoriteRecipe(recipe) }
-              >
-                <img
-                  src={ favorite ? BlackHeartIcon : whiteHeartIcon }
-                  alt="Favorite Icon"
-                  data-testid={ `${index}-horizontal-favorite-btn` }
+              <section className="mt-3 d-flex justify-content-around">
+                <button
+                  type="button"
+                  onClick={ () => removeFavoriteRecipe(recipe) }
+                  className="icon-button"
+                >
+                  <img
+                    src={ favorite ? BlackHeartIcon : whiteHeartIcon }
+                    alt="Favorite Icon"
+                    data-testid={ `${index}-horizontal-favorite-btn` }
+                  />
+                </button>
+                <ShareBtn
+                  testId={ `${index}-horizontal-share-btn` }
+                  route={ `/${recipe.type}s/${recipe.id}` }
                 />
-              </button>
+              </section>
+
             </Card.Body>
           </Card>
         ))
-      }
-    </>
+        }
+      </Container>
+    </section>
   );
 };
 
