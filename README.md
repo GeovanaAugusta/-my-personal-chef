@@ -30,4 +30,4 @@ O layout tem como foco dispositivos móveis, utilize na tela de 320x640 para mel
 
 ## Deploy
 
-_[My Personal Chef](https://trybewallet-project-front-end-geovanaaugusta.vercel.app//)_
+_[My Personal Chef](https://my-personal-chef-geovanaaugusta.vercel.app//)_
