@@ -8,12 +8,13 @@ import {
   readStorage, removeFromStorage, SaveStorage,
 } from '../services/recipesStorage';
 import ButtonsRecipe from './ButtonsRecipe';
+import GoBackBtn from './GoBackBtn';
 
 function DetailsImage() {
   const location = useLocation();
   const { recipeDetails } = useContext(Context);
   const [favorite, setFavorite] = useState(false);
-  const [showMessage, setShowMessage] = useState(false);
+  // const [showMessage, setShowMessage] = useState(false);
   const [recipeInfo, setRecipeInfo] = useState({
     id: '',
     type: '',
@@ -34,12 +35,12 @@ function DetailsImage() {
     setFavorite((prevFavorite) => (!prevFavorite));
   };
 
-  if (showMessage) {
-    const MESSAGE_TIME = 2000;
-    setTimeout(() => {
-      setShowMessage(false);
-    }, MESSAGE_TIME);
-  }
+  // if (showMessage) {
+  //   const MESSAGE_TIME = 2000;
+  //   setTimeout(() => {
+  //     setShowMessage(false);
+  //   }, MESSAGE_TIME);
+  // }
 
   useEffect(() => {
     const recipeId = location.pathname.split('/')[2];
@@ -77,6 +78,7 @@ function DetailsImage() {
 
   return (
     <Card>
+      <GoBackBtn />
       <Card.Img
         variant="top"
         src={ recipeInfo.image }

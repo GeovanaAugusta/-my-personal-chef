@@ -3,36 +3,35 @@ import { Link } from 'react-router-dom';
 import Card from 'react-bootstrap/Card';
 import { Button, ButtonGroup, Container } from 'react-bootstrap';
 import Header from '../components/Header';
-import whiteHeartIcon from '../images/whiteHeartIcon.svg';
 import BlackHeartIcon from '../images/blackHeartIcon.svg';
 import {
   FAVORITE_RECIPES_TOKEN, readStorage,
   removeFromStorage,
 } from '../services/recipesStorage';
 import ShareBtn from '../components/ShareBtn';
+import GoBackBtn from '../components/GoBackBtn';
 
 const FavoritesRecipes = () => {
-  const favoriteRecipes = readStorage(FAVORITE_RECIPES_TOKEN);
-
-  const [favorite, setFavorite] = useState(true);
   const [filteredRecipes, setFilteredRecipes] = useState([]);
   const [allRecipes, setAllRecipes] = useState([]);
 
   useEffect(() => {
+    const favoriteRecipes = readStorage(FAVORITE_RECIPES_TOKEN);
     setFilteredRecipes(favoriteRecipes);
     setAllRecipes(favoriteRecipes);
   }, []);
 
   const removeFavoriteRecipe = (recipe) => {
     removeFromStorage(FAVORITE_RECIPES_TOKEN, recipe.id);
-    const removeState = filteredRecipes.filter((index) => index.id !== recipe.id);
-    setFilteredRecipes(removeState);
 
-    setFavorite((prevFavorite) => (!prevFavorite));
+    const favoriteRecipes = readStorage(FAVORITE_RECIPES_TOKEN);
+
+    setFilteredRecipes(favoriteRecipes);
+    setAllRecipes(favoriteRecipes);
   };
 
   const filterByAll = async () => {
-    setFilteredRecipes(favoriteRecipes);
+    setFilteredRecipes(allRecipes);
   };
 
   const filterFoods = async () => {
@@ -48,7 +47,8 @@ const FavoritesRecipes = () => {
   return (
     <section className="bg-light">
       <Header />
-      <ButtonGroup size="lg" className="d-flex mx-2 mb-3 bg-white">
+      <GoBackBtn />
+      <ButtonGroup size="lg" className="d-flex mx-2 mb-3 bg-white mt-2">
         <Button
           variant="outline-danger"
           type="button"
@@ -122,7 +122,7 @@ const FavoritesRecipes = () => {
                   className="icon-button"
                 >
                   <img
-                    src={ favorite ? BlackHeartIcon : whiteHeartIcon }
+                    src={ BlackHeartIcon }
                     alt="Favorite Icon"
                     data-testid={ `${index}-horizontal-favorite-btn` }
                   />
